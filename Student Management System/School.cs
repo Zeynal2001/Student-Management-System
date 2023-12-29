@@ -2,6 +2,7 @@
 {
     public class School
     {
+        public string SName { get; set; }
         public string SMail { get; set; }
         public string SPassword { get; set;}
 
@@ -13,10 +14,12 @@
         {
             
         }
-        public School(string mektebMail, string mektebSifre)
+
+        public School(string sName, string sMail, string sPassword)
         {
-            SMail = mektebMail;
-            SPassword = mektebSifre;
+            SName = sName;
+            SMail = sMail;
+            SPassword = sPassword;
         }
     }
 }
