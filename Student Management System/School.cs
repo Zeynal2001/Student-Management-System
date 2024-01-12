@@ -90,7 +90,6 @@ namespace Student_Management_System
                 JsonSerializer.Serialize<List<Teacher>>(file, listMuellimler);
                 file.Close();
             }
-
         }
 
         public List<Teacher> GetTeachers()
@@ -111,6 +110,7 @@ namespace Student_Management_System
                 return listim;
             }
         }
+
 
         public void DisplayTeacher()
         {
@@ -146,7 +146,36 @@ namespace Student_Management_System
             return null;
         }
 
-        public bool MuellimiDeyis(int muellimnum, Teacher deyisdirilmisi)
+
+
+        public bool OzMelumatlariniDeyismekM(Teacher ozu, Teacher deyisdirilmisi)
+        {
+            var deyisilecek = listMuellimler;
+
+            for (int i = 0; i <= deyisilecek.Count; i++)
+            {
+                  var muellim = deyisilecek[i];
+
+                  if (muellim.TFName.ToLower() == ozu.TFName.ToLower() && muellim.TLName.ToLower() == ozu.TLName.ToLower())
+                  {
+                        var kohnemuellim = deyisilecek[i];
+                        deyisdirilmisi.TFName = string.IsNullOrWhiteSpace(deyisdirilmisi.TFName) ? kohnemuellim.TFName : deyisdirilmisi.TFName;
+                        deyisdirilmisi.TLName = string.IsNullOrWhiteSpace(deyisdirilmisi.TLName) ? kohnemuellim.TLName : deyisdirilmisi.TLName;
+                        deyisdirilmisi.TEmail = string.IsNullOrWhiteSpace(deyisdirilmisi.TEmail) ? kohnemuellim.TEmail : deyisdirilmisi.TEmail;
+                        deyisdirilmisi.TPassword = string.IsNullOrWhiteSpace(deyisdirilmisi.TPassword) ? kohnemuellim.TPassword : deyisdirilmisi.TPassword;
+                        deyisdirilmisi.Department = string.IsNullOrWhiteSpace(deyisdirilmisi.Department) ? kohnemuellim.Department : deyisdirilmisi.Department;
+                        deyisilecek[i] = deyisdirilmisi;
+                        SaveTeachers(deyisilecek);
+
+                        return true;
+                  }
+            }    
+
+            return false;
+        }
+
+
+        public bool TeacherUpdate(int muellimnum, Teacher deyisdirilmisi)
         {
             var deyisilecek = listMuellimler;
 
@@ -160,6 +189,7 @@ namespace Student_Management_System
                     deyisdirilmisi.TEmail = string.IsNullOrWhiteSpace(deyisdirilmisi.TEmail) ? kohnemuellim.TEmail : deyisdirilmisi.TEmail;
                     deyisdirilmisi.TPassword = string.IsNullOrWhiteSpace(deyisdirilmisi.TPassword) ? kohnemuellim.TPassword : deyisdirilmisi.TPassword;
                     deyisdirilmisi.Department = string.IsNullOrWhiteSpace(deyisdirilmisi.Department) ? kohnemuellim.Department : deyisdirilmisi.Department;
+                    deyisdirilmisi.Salary = deyisdirilmisi.Salary == 0 ? kohnemuellim.Salary : deyisdirilmisi.Salary;
                     deyisilecek[i] = deyisdirilmisi;
                     SaveTeachers(deyisilecek);
 
@@ -169,7 +199,11 @@ namespace Student_Management_System
             return false;
         }
 
-        public bool RomoveTeacher(int silineceknum)
+
+       
+
+
+        public bool RemoveTeacher(int silineceknum)
         {
             var silinecekMuellimler = listMuellimler;
 
@@ -207,7 +241,7 @@ namespace Student_Management_System
 
             var indiki = listTelebeler;
             indiki.Add(studentobj);
-            SaveTeachers(indiki);
+            SaveStudent(indiki);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Yeni tələbə əlavə edildi.");
             Console.ForegroundColor = ConsoleColor.Red;
@@ -217,13 +251,13 @@ namespace Student_Management_System
         {
             if (students != null)
             {
-                var file = File.Open(teacherPath, FileMode.Create);
+                var file = File.Open(studentPath, FileMode.Create);
                 JsonSerializer.Serialize<List<Student>>(file, students);
                 file.Close();
             }
             else
             {
-                var file = File.Open(teacherPath, FileMode.Create);
+                var file = File.Open(studentPath, FileMode.Create);
                 JsonSerializer.Serialize<List<Student>>(file, listTelebeler);
                 file.Close();
             }
@@ -237,6 +271,7 @@ namespace Student_Management_System
             }
             var file = File.OpenRead(studentPath);
             var listim = JsonSerializer.Deserialize<List<Student>>(file);
+            file.Close();
             if (listim == null)
             {
                 return new List<Student>();
@@ -260,6 +295,96 @@ namespace Student_Management_System
                 count++;
             }
         }
+
+
+        public Student? SearchStudent(string ad, string soyad)
+        {
+            foreach (var telebem in listTelebeler)
+            {
+                if (telebem.SFName.ToLower() == ad.ToLower() && telebem.SLName.ToLower() == soyad.ToLower())
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Tapıldı. Tələbənin adı: {telebem.SFName} - Soyadı: {telebem.SLName} - Emaili: {telebem.SEmail} - Şifrəsi: {telebem.SPassword} - Qiymət ortalaması: {telebem.Average}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    return telebem;
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Axtarışa uyğun tələbə tapılmadı.");
+            Console.ForegroundColor = ConsoleColor.White;
+            return null;
+        }
+
+
+        public bool OzMelumatlariniDeyismekS(Student ozu, Student deyisdirilmisi)
+        {
+            var deyisilecek = listTelebeler;
+
+            for (int i = 0; i < deyisilecek.Count; i++)
+            {
+                var telebe = deyisilecek[i];
+
+                if (telebe.SFName.ToLower() == ozu.SFName.ToLower() && telebe.SLName.ToLower() == ozu.SLName.ToLower())
+                {
+                    var  kohnestudent= deyisilecek[i];
+                    deyisdirilmisi.SFName = string.IsNullOrWhiteSpace(deyisdirilmisi.SFName) ? kohnestudent.SFName : deyisdirilmisi.SFName;
+                    deyisdirilmisi.SLName = string.IsNullOrWhiteSpace(deyisdirilmisi.SLName) ? kohnestudent.SLName : deyisdirilmisi.SLName;
+                    deyisdirilmisi.SEmail = string.IsNullOrWhiteSpace(deyisdirilmisi.SEmail) ? kohnestudent.SEmail : deyisdirilmisi.SEmail;
+                    deyisdirilmisi.SPassword = string.IsNullOrWhiteSpace(deyisdirilmisi.SPassword) ? kohnestudent.SPassword : deyisdirilmisi.SPassword;
+                    deyisilecek[i] = deyisdirilmisi;
+                    SaveStudent(deyisilecek);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public bool StudentUpdate(int telebenum, Student deyisdirilmisS)
+        {
+            var deyiselecek = listTelebeler;
+
+            for (int i = 0; i <= deyiselecek.Count; i++)
+            {
+                if (telebenum == (i + 1))
+                {
+                    
+                    var kohnetelebe = deyiselecek[i];
+                    deyisdirilmisS.SFName = string.IsNullOrWhiteSpace(deyisdirilmisS.SFName) ? kohnetelebe.SFName : deyisdirilmisS.SFName;
+                    deyisdirilmisS.SLName = string.IsNullOrWhiteSpace(deyisdirilmisS.SLName) ? kohnetelebe.SLName : deyisdirilmisS.SLName;
+                    deyisdirilmisS.SEmail = string.IsNullOrWhiteSpace(deyisdirilmisS.SEmail) ? kohnetelebe.SEmail : deyisdirilmisS.SEmail;
+                    deyisdirilmisS.SPassword = string.IsNullOrWhiteSpace(deyisdirilmisS.SPassword) ? kohnetelebe.SPassword : deyisdirilmisS.SPassword;
+                    deyisdirilmisS.Average = deyisdirilmisS.Average == 0 ? kohnetelebe.Average : deyisdirilmisS.Average;
+                    deyiselecek[i] = deyisdirilmisS;
+                    SaveStudent(deyiselecek);
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        public bool RemoveStudent(int silineceknum)
+        {
+            var silinecekTelebeler = listTelebeler;
+
+            for (int i = 0; i < silinecekTelebeler.Count; i++)
+            {
+                if (silineceknum == (i + 1))
+                {
+                    silinecekTelebeler.RemoveAt(i);
+                    SaveStudent(silinecekTelebeler);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
 
         #endregion
     }

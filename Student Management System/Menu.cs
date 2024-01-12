@@ -55,8 +55,8 @@
             Console.WriteLine("Xoş gəlmisiniz 😊. Etmək istədiyiniz əməliyyatı seçin: (1/5)");
             Console.WriteLine("1. Öz məlumatlarına baxmaq.");
             Console.WriteLine("2. Öz məlumatlarını dəyişmək.");
-            Console.WriteLine("4. Müəllimlərin siyahısına baxmaq.");
-            Console.WriteLine("5. Proqramdan çıxış etmək.");
+            Console.WriteLine("3. Müəllimlərin siyahısına baxmaq.");
+            Console.WriteLine("4. Proqramdan çıxış etmək.");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("-----------------------------------");
         }
